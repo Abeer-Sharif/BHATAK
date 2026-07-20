@@ -15,7 +15,7 @@
         <img src="<%=listings.image.url%>" class="card-img-top show-img mb-2 mt-2" alt="listing_image">
         <div class="card-body">
             <p class="card-text">
-                <i>Owned By:<%=listings.owner.username%></i></p>
+                <i>Owned By:<%= listings.owner ? listings.owner.username : "Unknown" %></i></p>
             <p class="card-text"><%=listings.description%></p>
             <p class="card-text"> &#8377; <%=listings.price.toLocaleString("en-IN")%></p>
              <p class="card-text"><%=listings.location%></p>

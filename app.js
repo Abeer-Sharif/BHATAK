@@ -103,17 +103,21 @@ app.use((err, req, res, next) => {
 async function startServer() {
     try {
         await mongoose.connect(dbUrl);
+
         console.log("connected to db");
+        console.log("DATABASE:", mongoose.connection.name);
+        console.log("HOST:", mongoose.connection.host);
+
         app.listen(8080, () => {
-        console.log("server is running on port 8080")
-});
-    }catch (error) {
+            console.log("server is running on port 8080");
+        });
+
+    } catch (error) {
         console.log("error connecting to database:", error);
     }
-};
-startServer();
-    
+}
 
+startServer();
 
 
 

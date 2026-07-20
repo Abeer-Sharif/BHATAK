@@ -26,7 +26,7 @@ async function initDB() {
         await Listing.deleteMany({});
 
         const ownerId = new mongoose.Types.ObjectId(
-            "6a4d3fc8bfb36091d7d12d56"
+            "6a5bc495b68ba70b86a2601b"
         );
 
         const listings = [];
