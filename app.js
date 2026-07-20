@@ -105,8 +105,8 @@ async function startServer() {
         await mongoose.connect(dbUrl);
 
         console.log("connected to db");
-        console.log("DATABASE:", mongoose.connection.name);
-        console.log("HOST:", mongoose.connection.host);
+        // console.log("DATABASE:", mongoose.connection.name);
+        // console.log("HOST:", mongoose.connection.host);
 
         app.listen(8080, () => {
             console.log("server is running on port 8080");
