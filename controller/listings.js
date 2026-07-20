@@ -17,8 +17,8 @@ module.exports.listingForm = (req, res) => {
 module.exports.show = async (req, res) => {
     let { id } = req.params;
     const listings = await listing.findById(id).populate({ path: 'reviews', populate: { path: 'author' } }).populate('owner');
-        console.log("OWNER:", listings.owner);
-    console.log("OWNER TYPE:", typeof listings.owner);
+    //     console.log("OWNER:", listings.owner);
+    // console.log("OWNER TYPE:", typeof listings.owner);
     if (!listings) {
         req.flash("error", 'Listings doesnt exist');
         return res.redirect("/listings");

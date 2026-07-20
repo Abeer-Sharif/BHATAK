@@ -1,8 +1,8 @@
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
-console.log("MAP_TOKEN:", process.env.MAPBOX);
-console.log("MONGO_URL:", process.env.MONGO_URL);
+// console.log("MAP_TOKEN:", process.env.MAPBOX);
+// console.log("MONGO_URL:", process.env.MONGO_URL);
 
 const mongoose = require("mongoose");
 const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
