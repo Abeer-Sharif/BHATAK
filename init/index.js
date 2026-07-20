@@ -1,27 +1,64 @@
-const mongoose = require('mongoose');
-const initData = require('./data.js');
-const listing = require('../models/listing.js');
-const express = require("express");
-const app = express();
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
+console.log("MAP_TOKEN:", process.env.MAPBOX);
+console.log("MONGO_URL:", process.env.MONGO_URL);
 
+const mongoose = require("mongoose");
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 
+const Listing = require("../models/listing");
+const initData = require("./data.js");
 
-async function startServer() {
-    try {
-        await mongoose.connect("mongodb://127.0.0.1:27017/bhatak");
-        console.log("connected to db");
-        app.listen(8080, () => {
-        console.log("server is running on port 8080")
+const mapToken = process.env.MAPBOX;
+
+const geocodingClient = mbxGeocoding({
+    accessToken: mapToken,
 });
-    }catch (error) {
-        console.log("error connecting to database:", error);
+
+async function initDB() {
+    try {
+        // Connect to MongoDB Atlas
+        await mongoose.connect(process.env.MONGO_URL);
+        console.log("Connected to MongoDB Atlas");
+
+        // Delete old listings
+        await Listing.deleteMany({});
+
+        const ownerId = new mongoose.Types.ObjectId(
+            "6a4d3fc8bfb36091d7d12d56"
+        );
+
+        const listings = [];
+
+        for (let obj of initData.data) {
+
+            const response = await geocodingClient
+                .forwardGeocode({
+                    query: `${obj.location}, ${obj.country}`,
+                    limit: 1,
+                })
+                .send();
+
+            obj.owner = ownerId;
+
+            if (response.body.features.length > 0) {
+                obj.geometry = response.body.features[0].geometry;
+            }
+
+            listings.push(obj);
+
+            console.log(`Added: ${obj.title}`);
+        }
+
+        await Listing.insertMany(listings);
+
+        console.log("Database initialized successfully!");
+
+        await mongoose.connection.close();
+    } catch (err) {
+        console.error(err);
     }
-};
-startServer();
-const initDB = async () => {
-    await listing.deleteMany({});
-    initData.data = initData.data.map((obj)=>({...obj,owner:'6a4d3fc8bfb36091d7d12d56'}))
-    await listing.insertMany(initData.data);
-    console.log("data was initialized");
-};
+}
+
 initDB();
